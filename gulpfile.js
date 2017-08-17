@@ -1,0 +1,12 @@
+var gulp = require('gulp');
+var webserver = require('gulp-webserver');
+
+gulp.task('default', function() {
+  gulp.src('./')
+    .pipe(webserver({
+      fallback: 'index.html',
+      livereload: true,
+      open: true,
+      port: '492'
+    }));
+});

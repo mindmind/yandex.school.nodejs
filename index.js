@@ -5,6 +5,7 @@ class FormClass {
 		this.$form = document.forms.myForm;
 		this.$inputs = this.getInputs();
 		this.$button = this.$form.submitButton;
+		this.$result = document.getElementById('resultContainer');
 		this.validationRules = {
 			fio: /^(([а-яА-Яa-zA-Z]+)\s){2}([а-яА-Яa-zA-Z]+)$/,
 			email: /^[a-zA-Z0-9_]+@(ya\.ru|yandex\.(ru|ua|by|kz|com))$/,
@@ -73,13 +74,27 @@ class FormClass {
 		const validateResult = this.validate();
 		if (validateResult.isValid) {
 			this.$button.disabled = true;
-			fetch('./test-json/success.json').then(responce => responce.json()).then(status => {
-				console.log('STATUS')
-				console.log(status)
-			});
+			this.sendRequest();
 		} else {
 			this.showErrorFields(validateResult.errorFields);
 		}
+	}
+
+	sendRequest(){
+		fetch('./test-json/progress.json').then(responce => responce.json()).then(data => {
+			this.$result.classList.add(data.status);
+			switch (data.status){
+				case 'success':
+					this.$result.innerHTML = 'Success';
+					break;
+				case 'error':
+					this.$result.innerHTML = data.reason;
+					break;
+				case 'progress':
+					setTimeout(self.sendRequest,data.timeout);
+					break;
+			}
+		});
 	}
 
 	showErrorFields(names){
@@ -100,4 +115,4 @@ class FormClass {
 
 }
 
-let MyForm = new FormClass();
+const MyForm = new FormClass();

@@ -1,0 +1,23 @@
+{
+  "name": "yandex.school.nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mindmind/yandex.school.nodejs.git"
+  },
+  "author": "mindmind",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mindmind/yandex.school.nodejs/issues"
+  },
+  "homepage": "https://github.com/mindmind/yandex.school.nodejs#readme",
+  "dependencies": {
+    "gulp": "^3.9.1",
+    "gulp-webserver": "^0.9.1"
+  }
+}
