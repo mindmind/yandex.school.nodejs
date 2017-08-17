@@ -1,40 +1,82 @@
-class MyForm {
+class FormClass {
 	
 	constructor(){
-		this.$inputs = getInputs(['fio','email','phone']);
+		this.inputsNames = ['fio','email','phone'];
+		this.$form = document.forms.myForm;
+		this.$inputs = this.getInputs();
+		this.$button = this.$form.submitButton;
 		this.validationRules = {
 			fio: /^(([а-яА-Яa-zA-Z]+)\s){2}([а-яА-Яa-zA-Z]+)$/,
 			email: /^[a-zA-Z0-9_]+@(ya\.ru|yandex\.(ru|ua|by|kz|com))$/,
 			phone: /^\+7\([0-9]{3}\)[0-9]{3}-[0-9]{2}-[0-9]{2}$/
 		}
+		this.createListeners();
 	}
 
-	getInputs(names){
+	getInputs(){
 		let inputsObj = {};
-		names.forEach(name => {
-			const $input = document.getElementsByName(name);
-			if ($input.length) inputsObj[name] = $input[0];
+		this.inputsNames.forEach(name => {
+			const $input = this.$form[name];
+			if ($input) inputsObj[name] = $input;
 		});
 		return inputsObj;
 	}
 
-	validate(){
+	createListeners(){
+		this.$form.addEventListener('submit',event => this.submit(event));
+	}
 
+	validate(){
+		let isValid = true,
+			errorFields = [];
+		const data = this.getData(),
+			  rules = this.validationRules;
+		for (let key in data){
+			const value = data[key];
+			if (rules.hasOwnProperty(key)){
+				if (!(rules[key].test(value))){
+					isValid = false;
+					errorFields.push(key);
+					continue;
+				}
+				if (key == 'phone'){
+					const sum = value.replace( /\D/g, '' ).split('').reduce((prev,current)=> prev + parseInt(current),0);
+					if (sum > 30) {
+						isValid = false;
+						errorFields.push(key);
+					}
+				}
+			}
+		}
+		return {isValid, errorFields};
 	}
 
 	getData(){
-
+		let dataObj = {};
+		for (let key in this.$inputs){
+			let $input = this.$inputs[key];
+			dataObj[$input.name] = $input.value.trim();
+		}
+		return dataObj;
 	}
 
 	setData(data){
-
+		for (let key in data){
+			const value = data[key];
+			if (this.inputsNames.indexOf(key) != -1) this.$inputs[key].value = value;
+		}
 	}
 
 	submit(e){
 		e.preventDefault();
+		this.hideErrorFields();
 		const validateResult = this.validate();
-		if (validateResult) {
-			//send ajax
+		if (validateResult.isValid) {
+			this.$button.disabled = true;
+			fetch('./test-json/success.json').then(responce => responce.json()).then(status => {
+				console.log('STATUS')
+				console.log(status)
+			});
 		} else {
 			this.showErrorFields(validateResult.errorFields);
 		}
@@ -44,15 +86,18 @@ class MyForm {
 		names.forEach(name => {
 			if (this.$inputs.hasOwnProperty(name)) {
 				let $input = this.$inputs[name];
-				$input.addClass('error');
+				$input.classList.add('error');
 			}
 		})
 	}
 
 	hideErrorFields(){
-		this.$inputs.forEach($input => {
+		for (let key in this.$inputs){
+			let $input = this.$inputs[key];
 			if ($input.classList.contains('error')) $input.classList.remove('error');
-		});
+		};
 	}
 
 }
+
+let MyForm = new FormClass();
