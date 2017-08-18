@@ -83,18 +83,22 @@ class FormClass {
 
 	sendRequest(context){
 		fetch(context.action).then(responce => responce.json()).then(data => {
+			let text;
+			context.$result.className = 'result';
 			context.$result.classList.add(data.status);
 			switch (data.status){
 				case 'success':
-					context.$result.innerHTML = 'Success';
+					text = 'Success';
 					break;
 				case 'error':
-					context.$result.innerHTML = data.reason;
+					text = data.reason;
 					break;
 				case 'progress':
+					text = 'Progress...';
 					setTimeout(context.sendRequest,data.timeout,context);
 					break;
 			}
+			context.$result.innerHTML = text;
 		});
 	}
 

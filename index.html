@@ -4,22 +4,20 @@
 	<head>
 	  <meta charset="utf-8">
 	  <title>Yandex School NodeJS Task</title>
-	  <!-- <link rel="stylesheet" href="style.css"> -->
-	  <style>
-	  	.error {
-	  		border: 1px solid red;
-	  	}
-	  </style>
+	  <link rel="stylesheet" href="style.css">
 	</head>
 
 	<body>
-	  <form id="myForm" action="./test-json/progress.json">
-	  		<input type="text" name="fio"/>
-	  		<input type="text" name="email"/>
-	  		<input type="text" name="phone"/>
-	  		<button type="submit" id="submitButton">Поехали</button>
+	  <form id="myForm" class="form" action="./test-json/progress.json">
+	  		<label for="fio">Fio</label>
+	  		<input class="form__input" type="text" name="fio"/>
+	  		<label for="email">Email</label>
+	  		<input class="form__input" type="text" name="email"/>
+	  		<label for="phone">Phone</label>
+	  		<input class="form__input" type="text" name="phone"/>
+	  		<button class="form__button" type="submit" id="submitButton">Go</button>
 	  </form>
-	  <div id="resultContainer"></div>
+	  <div class="result" id="resultContainer"></div>
 	  <script src="./index.js"></script>
 	</body>
 </html>
