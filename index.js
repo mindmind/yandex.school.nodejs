@@ -74,24 +74,25 @@ class FormClass {
 		const validateResult = this.validate();
 		if (validateResult.isValid) {
 			this.$button.disabled = true;
-			this.sendRequest();
+			this.action = e.target.action;
+			this.sendRequest(this);
 		} else {
 			this.showErrorFields(validateResult.errorFields);
 		}
 	}
 
-	sendRequest(){
-		fetch('./test-json/progress.json').then(responce => responce.json()).then(data => {
-			this.$result.classList.add(data.status);
+	sendRequest(context){
+		fetch(context.action).then(responce => responce.json()).then(data => {
+			context.$result.classList.add(data.status);
 			switch (data.status){
 				case 'success':
-					this.$result.innerHTML = 'Success';
+					context.$result.innerHTML = 'Success';
 					break;
 				case 'error':
-					this.$result.innerHTML = data.reason;
+					context.$result.innerHTML = data.reason;
 					break;
 				case 'progress':
-					setTimeout(self.sendRequest,data.timeout);
+					setTimeout(context.sendRequest,data.timeout,context);
 					break;
 			}
 		});
